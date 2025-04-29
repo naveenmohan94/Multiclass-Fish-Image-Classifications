@@ -5,6 +5,7 @@ This repository contains code for classifying fish images into multiple categori
 ## Table of Contents
 - [Project Overview](#project-overview)
 - [Installation](#installation)
+- [Imports](#imports)
 - [Dataset](#dataset)
 - [Directory Structure](#directory-structure)
 - [Preprocessing](#preprocessing)
@@ -13,8 +14,9 @@ This repository contains code for classifying fish images into multiple categori
 - [Evaluation](#evaluation)
 - [Results](#results)
 - [Usage](#usage)
-- [License](#license)
 - [Class Names](#class-names)
+- [Visualizations](#visualizations)
+- [License](#license)
 
 ## Project Overview
 The objective of this project is to classify fish species using deep learning models. It compares the performance of a basic CNN and several pretrained models to identify which architecture performs best for fish image classification.
@@ -30,13 +32,49 @@ pip install streamlit pyngrok streamlit-folium nbconvert
 npm install localtunnel
 ```
 
+## Imports
+```python
+# File Handling and Image Processing
+import os
+import zipfile
+from PIL import Image
+import matplotlib.image as mpimg
+import matplotlib.pyplot as plt
+import random
+
+# Torch and Vision
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import DataLoader
+from torchvision import datasets, transforms, models
+
+# Display and Progress
+from IPython.display import display
+from tqdm import tqdm
+
+# Data Handling
+import pandas as pd
+import numpy as np
+
+# Visualization
+import seaborn as sns
+
+# Metrics
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+
+# Warnings
+import warnings
+warnings.filterwarnings('ignore')
+```
+
 ## Dataset
 The dataset contains labeled fish images categorized into:
 - `train/`: Training data
 - `val/`: Validation data
 - `test/`: Testing data
 
-### Directory Structure
+## Directory Structure
 ```
 Dataset/
 ├── train/
@@ -76,9 +114,17 @@ vgg16.classifier[6] = nn.Linear(num_features, 11)
 
 ## Training
 - Trained for 20 epochs
-- DataLoader for batching
-- Transformations during train/validation
-- Backpropagation and weight updates
+- Batch size: 32
+- Used `train_loader` and `val_loader` for training and validation
+- DataLoader with `shuffle=True` for training
+- Model checkpointing and saving best `.pth` model
+
+Each pretrained model was trained using:
+- `train_loader` for training
+- `val_loader` for validation
+- Batch size = 32
+- Evaluation done on `eval_loader` or `test_loader`
+- Metrics like accuracy, precision, recall, and F1 were computed per model
 
 ## Evaluation
 Metrics used:
@@ -105,16 +151,20 @@ Run the Streamlit app from Colab or local:
 ```
 
 ## Class Names
-```python
-class_names = [
-    'animal fish', 'animal fish bass', 'fish sea_food black_sea_sprat',
-    'fish sea_food gilt_head_bream', 'fish sea_food hourse_mackerel',
-    'fish sea_food red_mullet', 'fish sea_food red_sea_bream',
-    'fish sea_food sea_bass', 'fish sea_food shrimp',
-    'fish sea_food striped_red_mullet', 'fish sea_food trout'
-]
-```
+The 11 fish species classes used in the model are:
 
-## License
-This project is open source and available under the [MIT License](LICENSE).
+- animal fish
+- animal fish bass
+- fish sea_food black_sea_sprat
+- fish sea_food gilt_head_bream
+- fish sea_food hourse_mackerel
+- fish sea_food red_mullet
+- fish sea_food red_sea_bream
+- fish sea_food sea_bass
+- fish sea_food shrimp
+- fish sea_food striped_red_mullet
+- fish sea_food trout
+
+
+```
 
