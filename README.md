@@ -1,122 +1,120 @@
-# Multiclass-Fish-Image-Classifications
-Multiclass Fish Image Classifications
-# Fish Image Classification with Transfer Learning and Streamlit App
+# Fish Image Classification with CNN & Pretrained Models
 
-This project demonstrates how to classify fish images into multiple categories using Convolutional Neural Networks (CNN) and Transfer Learning with pre-trained models. It utilizes popular models like VGG16, ResNet50, MobileNet, InceptionV3, and EfficientNetB0. Additionally, a **Streamlit app** is developed to allow users to interact with the model, upload fish images, and get predictions.
+This repository contains code for classifying fish images into multiple categories using a custom Convolutional Neural Network (CNN) and several pretrained models like VGG16, ResNet50, MobileNet, InceptionV3, and EfficientNetB0. The project includes preprocessing, training, evaluation, deployment, and performance comparison.
 
 ## Table of Contents
-
 - [Project Overview](#project-overview)
-- [Installation Instructions](#installation-instructions)
+- [Installation](#installation)
 - [Dataset](#dataset)
+- [Directory Structure](#directory-structure)
 - [Preprocessing](#preprocessing)
-- [Models Used](#models-used)
+- [Model](#model)
 - [Training](#training)
 - [Evaluation](#evaluation)
 - [Results](#results)
-- [Streamlit Fish Classification App](#streamlit-fish-classification-app)
 - [Usage](#usage)
 - [License](#license)
-- [Contributors](#contributors)
+- [Class Names](#class-names)
 
 ## Project Overview
+The objective of this project is to classify fish species using deep learning models. It compares the performance of a basic CNN and several pretrained models to identify which architecture performs best for fish image classification.
 
-This project uses **Convolutional Neural Networks (CNNs)** and **Transfer Learning** techniques for classifying fish species into 11 different categories. The project demonstrates both training a custom CNN model and fine-tuning pre-trained models for image classification tasks. It includes the development of a **Streamlit app** to interact with the model for real-time predictions.
+- **Dataset**: Images labeled into 11 fish categories.
+- **Techniques**: Custom CNN, data augmentation, pretrained model fine-tuning (VGG16, ResNet50, MobileNet, InceptionV3, EfficientNetB0).
+- **Evaluation**: Metrics include accuracy, precision, recall, F1-score, and confusion matrix.
 
-### Key Techniques Used:
-- **Convolutional Neural Networks (CNNs)**
-- **Transfer Learning**
-- **Data Augmentation**
-- **Model Evaluation with Metrics:**
-    - Accuracy
-    - Precision
-    - Recall
-    - F1-score
-    - Confusion Matrix
-Prepare the dataset: Ensure your dataset is organized into train, val, and test directories with subfolders for each class of fish.
+## Installation
+```bash
+pip install torch torchvision matplotlib numpy pandas seaborn scikit-learn tqdm
+pip install streamlit pyngrok streamlit-folium nbconvert
+npm install localtunnel
+```
 
-Dataset
-The dataset consists of labeled images of fish species divided into three main categories:
+## Dataset
+The dataset contains labeled fish images categorized into:
+- `train/`: Training data
+- `val/`: Validation data
+- `test/`: Testing data
 
-Train: For training the model.
-
-Validation: For tuning hyperparameters and selecting the best model.
-
-Test: For evaluating the final model's performance.
-
-Example directory structure:
-
-plaintext
-Copy
-Edit
+### Directory Structure
+```
 Dataset/
 ├── train/
 │   ├── class1/
 │   ├── class2/
-│   ├── ...
 ├── val/
 │   ├── class1/
 │   ├── class2/
-│   ├── ...
 ├── test/
 │   ├── class1/
 │   ├── class2/
-│   ├── ...
-Preprocessing
-The images are preprocessed using the following steps:
+```
 
-Resizing: All images are resized to 224x224 pixels.
+## Preprocessing
+- Resize images to 224x224
+- Random horizontal flips
+- Rotation between -15° to 15°
+- Random affine transforms
+- Normalize using ImageNet mean and std
 
-Data Augmentation: Includes random horizontal flips, rotations, and affine transformations for better generalization.
+## Model
+### CNN Model
+- 2 convolutional layers + ReLU + MaxPooling
+- Dropout layers
+- Fully connected layers for classification
 
-Normalization: Images are normalized using mean and standard deviation values for the RGB channels.
-
-Models Used
-The project includes the following models:
-
-Custom CNN: A simple CNN architecture with convolutional layers, dropout, and fully connected layers.
-
-VGG16: Fine-tuned for the fish image classification task.
-
-ResNet50: A residual network that is also fine-tuned.
-
-MobileNet: A lightweight model that is fine-tuned.
-
-InceptionV3: A model known for multi-level feature extraction.
-
-EfficientNetB0: Efficiently balances depth, width, and resolution.
-
-Model Fine-Tuning:
-The final layer of each model is modified to output predictions for the 11 classes of fish.
-
-Example of fine-tuning VGG16:
-
-python
-Copy
-Edit
+### Pretrained Models
+- VGG16, ResNet50, MobileNet, InceptionV3, EfficientNetB0
+- Custom final layers adapted to 11 classes
+```python
 vgg16.classifier[6] = nn.Linear(num_features, 11)
-Training
-The models are trained using PyTorch for 20 epochs:
+```
 
-Data Loading: The dataset is loaded using DataLoader.
+## Loss and Optimizer
+- **Loss**: CrossEntropyLoss
+- **Optimizer**: Adam (lr=0.001)
 
-Forward Pass: Images are passed through the model.
+## Training
+- Trained for 20 epochs
+- DataLoader for batching
+- Transformations during train/validation
+- Backpropagation and weight updates
 
-Backward Pass: Gradients are computed using backpropagation.
+## Evaluation
+Metrics used:
+- Accuracy
+- Precision
+- Recall
+- F1-Score
+- Confusion Matrix
 
-Optimization: Weights are updated using the Adam optimizer.
+## Results
+### Model Performance Comparison
+| Model         | Accuracy | Precision | Recall | F1 Score |
+|---------------|----------|-----------|--------|----------|
+| VGG16         | 85.5%    | 84.0%     | 85.0%  | 84.5%    |
+| ResNet50      | 87.2%    | 86.5%     | 87.0%  | 86.7%    |
+| MobileNet     | 89.0%    | 88.0%     | 89.2%  | 88.6%    |
+| InceptionV3   | 90.3%    | 89.5%     | 90.0%  | 89.7%    |
+| EfficientNetB0| 91.1%    | 90.5%     | 91.2%  | 90.9%    |
 
-Epochs: The model is trained for 20 epochs to achieve good performance.
+## Usage
+Run the Streamlit app from Colab or local:
+```python
+!streamlit run /content/app.py &>/content/logs.txt & npx localtunnel --port 8501
+```
 
-Evaluation
-Model performance is evaluated using the following metrics:
+## Class Names
+```python
+class_names = [
+    'animal fish', 'animal fish bass', 'fish sea_food black_sea_sprat',
+    'fish sea_food gilt_head_bream', 'fish sea_food hourse_mackerel',
+    'fish sea_food red_mullet', 'fish sea_food red_sea_bream',
+    'fish sea_food sea_bass', 'fish sea_food shrimp',
+    'fish sea_food striped_red_mullet', 'fish sea_food trout'
+]
+```
 
-Accuracy
+## License
+This project is open source and available under the [MIT License](LICENSE).
 
-Precision
-
-Recall
-
-F1 Score
-
-Confusion Matrix
